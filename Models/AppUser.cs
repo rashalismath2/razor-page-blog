@@ -7,5 +7,6 @@ namespace BlogSite.Models;
 public class AppUser : IdentityUser
 {
     public string? ProfileUrl { get; set; }
+    public string FullName { get; set; }
 }
 

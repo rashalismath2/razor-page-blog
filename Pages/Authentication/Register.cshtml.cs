@@ -4,7 +4,7 @@ using BlogSite.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-
+using System.Security.Claims;
 
 namespace BlogSite.Pages.Authentication
 {
@@ -29,7 +29,6 @@ namespace BlogSite.Pages.Authentication
 
         [BindProperty]
         public SignupVm Input { get; set; }
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
 
         public async Task<IActionResult> OnGetAsync()
@@ -43,17 +42,19 @@ namespace BlogSite.Pages.Authentication
 
         public async Task<IActionResult> OnPostAsync()
         {
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
 
+                user.FullName = Input.FullName;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                await _userManager.AddClaimAsync(user, new Claim("FullName", user.FullName));
 
                 if (result.Succeeded)
                 {
-                    if (Input.ProfilePic.Length > 0)
+                    if (Input.ProfilePic is not null && Input.ProfilePic.Length > 0)
                     {
                         var folder = Path.Combine(_hostenvironment.WebRootPath, "UploadedFiles");
                         if (!Directory.Exists(folder))

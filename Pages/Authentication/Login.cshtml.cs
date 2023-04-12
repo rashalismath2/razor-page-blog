@@ -23,7 +23,7 @@ namespace BlogSite.Pages.Authentication
         public string ErrorMessage { get; set; }
 
 
-        public async Task<IActionResult> OnGetAsync()
+        public IActionResult OnGet()
         {
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
@@ -35,7 +35,7 @@ namespace BlogSite.Pages.Authentication
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             if (ModelState.IsValid)
             {
