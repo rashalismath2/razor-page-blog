@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BlogSite.styles.css" asp-append-version="true" />
     <script src="~/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
     <header>
@@ -20,26 +21,34 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @*           <li class="nav-item">
-                        <a class="nav-link text-light" asp-area="" asp-page="/Index">Home</a>
+                        <li class="nav-item">
+                            <form class="d-flex" role="search" method="get" action="/Search">
+                                <div class="input-group input-group-sm ms-4">
+                                    <input name="title" class="form-control me-2" type="search" placeholder="Search by title" aria-label="Search">
+                                    <button class="btn btn-outline-light" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                </div>
+                             
+                            </form>
                         </li>
-                        *@
                     </ul>
 
                     <div class="navbar-nav">
                         @if (User.Identity.IsAuthenticated)
                         {
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-page="/posts/create"><i class="fa-regular fa-pen-to-square"></i></a>
+                            </li>
                             <li class="nav-item text-light">
                                 <p class="navbar-text text-white my-0 mx-3">Hello, @User.Claims.ToList().FirstOrDefault((c)=>c.Type=="FullName").Value!</p>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="authentication/logout">Logout</a>
+                                <a class="nav-link" aria-current="page" href="/authentication/logout">Logout</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="authentication/login">Login</a>
+                                <a class="nav-link" aria-current="page" href="/authentication/login">Login</a>
                             </li>
                         }
                     </div>
@@ -55,7 +64,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - BlogSite
+            &copy; 2023 - Story Telling
         </div>
     </footer>
 

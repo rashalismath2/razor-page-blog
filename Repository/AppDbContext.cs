@@ -6,11 +6,12 @@ namespace BlogSite.Repository
 {
     public class AppDbContext : IdentityDbContext<AppUser>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
         }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

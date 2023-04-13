@@ -3,6 +3,7 @@ using System;
 using BlogSite.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogSite.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230412204622_post-update")]
+    partial class postupdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,15 +119,7 @@ namespace BlogSite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("AppUserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
                     b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CoverImage")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -142,8 +137,6 @@ namespace BlogSite.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
 
                     b.ToTable("Posts");
                 });
@@ -287,17 +280,6 @@ namespace BlogSite.Migrations
                         .HasForeignKey("AppUserId");
                 });
 
-            modelBuilder.Entity("BlogSite.Models.Post", b =>
-                {
-                    b.HasOne("BlogSite.Models.AppUser", "AppUser")
-                        .WithMany("Articles")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -351,8 +333,6 @@ namespace BlogSite.Migrations
 
             modelBuilder.Entity("BlogSite.Models.AppUser", b =>
                 {
-                    b.Navigation("Articles");
-
                     b.Navigation("GalleryImages");
                 });
 #pragma warning restore 612, 618

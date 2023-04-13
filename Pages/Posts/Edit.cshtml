@@ -1,11 +1,10 @@
-﻿@page
-@model BlogSite.Pages.Posts.CreateModel
+﻿@page "{id}"
+@model BlogSite.Pages.Posts.EditModel
 @{
-    ViewData["Title"] = "Create Post";
+    ViewData["Title"] = "Edit Post";
 }
 
-
-<form method="POST" id="post-form" enctype="multipart/form-data">
+<form method="POST" id="update-post-form" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"> </div>
     <div class="form-outline mb-4">
         <label class="form-label" asp-for="Input.Title"></label>
@@ -13,6 +12,9 @@
             <input asp-for="Input.Title" class="form-control" />
             <span asp-validation-for="Input.Title" class="text-danger"></span>
         </div>
+    </div>
+    <div class="form-outline mb-4">
+        <img class="cover-image" src="@Model.Input.ExistingCoverImage" />
     </div>
     <div class="form-outline mb-4">
         <label class="form-label" asp-for="Input.CoverImage"></label>
@@ -30,14 +32,13 @@
         </div>
     </div>
     <div class="submit-container">
-        <input type="Submit" class="btn btn-dark" value="Publish Article" />
+        <input type="Submit" class="btn btn-dark" value="Update Article" />
     </div>
 
 </form>
 
 <div id="gallery-container" class="mt-5">
 </div>
-
 
 @section Scripts{
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -177,4 +178,4 @@
 
     </script>
 
-}
+    }

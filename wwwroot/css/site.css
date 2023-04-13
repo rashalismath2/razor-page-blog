@@ -311,3 +311,156 @@ body {
 
 
 /*register form*/
+
+
+
+
+/*create post*/
+
+#post-form .submit-container {
+    text-align: end;
+}
+
+
+#upload-new-image {
+    display: flex;
+    display: flex;
+    margin: 50px 0 180px;
+    justify-content: flex-end;
+}
+
+    #upload-new-image input {
+        margin-right:10px;
+        width: 280px;
+    }
+
+
+#images-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+    #images-container img {
+        width: 200px;
+        height: 200px;
+        margin: 0 10px 10px 0;
+    }
+#images-container h3 {
+    margin-bottom: 30px;
+}
+
+
+
+/*
+view post*/
+
+#post-body img{
+    max-width:100%;
+}
+#post-details .card {
+    border: 0 !important;
+}
+#post-details .card-body {
+    padding-left: 0;
+    padding-bottom: 0;
+}
+.post-details-created-date {
+    font-size:12px
+}
+#post-details .post-header-user {
+    border-bottom: 1px solid #dedede;
+}
+
+.img-md {
+    width: 50px;
+    height: 50px;
+}
+.user-name {
+    text-transform:capitalize;
+    text-decoration:none;
+    color:black;
+    font-weight:bold;
+
+}
+#post-title-container {
+    margin: 10px 0 20px;
+    text-transform: capitalize;
+    font-weight: bold;
+}
+
+#post-body {
+    margin-top:20px;
+}
+#post-actions i{
+    margin-left:10px
+}
+#post-cover-container {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+}
+#post-cover-container img {
+    max-width: 100%;
+    height: 400px;
+}
+
+/*
+search*/
+#search-page {
+    margin-top: 50px;
+}
+.search-results {
+    padding-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:space-between;
+}
+a.post-card-container {
+    text-decoration: none
+}
+
+    #search-header {
+        display: flex
+    }
+    #search-header h3 {
+        font-size:40px;
+    }
+    #search-title {
+        color: grey;
+        margin-right: 10px;
+    }
+.post-card-user-image {
+    width:50px;
+    height:50px;
+    border-radius:50%
+}
+.post-card-user-name {
+    text-transform: capitalize;
+    font-weight: bold;
+    margin-bottom:5px;
+    color:black;
+}
+.post-card-post-date {
+    color: grey;
+    font-size: 12px;
+}
+.post-card-header {
+}
+.post-card-container {
+    width: fit-content;
+    /*margin: 0 20px 20px 0;*/
+}
+.post-card-body .card-title {
+    text-transform: capitalize;
+    color:black;
+}
+
+/*
+edit post*/
+#update-post-form .cover-image {
+    max-width: 100%;
+    height: 400px;
+}
+
+#update-post-form .submit-container {
+    text-align: end;
+}

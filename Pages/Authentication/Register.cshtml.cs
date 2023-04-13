@@ -51,6 +51,7 @@ namespace BlogSite.Pages.Authentication
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 await _userManager.AddClaimAsync(user, new Claim("FullName", user.FullName));
+                await _userManager.AddClaimAsync(user, new Claim("Id", user.Id));
 
                 if (result.Succeeded)
                 {

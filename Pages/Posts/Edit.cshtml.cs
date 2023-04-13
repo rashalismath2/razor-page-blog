@@ -1,42 +1,64 @@
 using BlogSite.Models;
 using BlogSite.Repository;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogSite.Pages.Posts
 {
-    [Authorize]
-    public class CreateModel : PageModel
+    public class EditModel : PageModel
     {
         private readonly AppDbContext _dbContext;
         private readonly IWebHostEnvironment webHostEnvironment;
 
-        public CreateModel(AppDbContext dbContext, IWebHostEnvironment webHostEnvironment)
+        public EditModel(AppDbContext dbContext, IWebHostEnvironment webHostEnvironment)
         {
             _dbContext = dbContext;
             this.webHostEnvironment = webHostEnvironment;
         }
 
         [BindProperty]
-        public CreatePostVm Input { get; set; }
-        public void OnGet()
+        public UpdatePostvm Input { get; set; }
+
+
+        public async Task<IActionResult> OnGet(int id)
         {
+            var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == id);
+            if (post is null)
+            {
+                return Redirect("/");
+            }
+
+            Input = new UpdatePostvm
+            {
+                Title = post.Title,
+                Body = post.Body,
+                ExistingCoverImage=post.CoverImage
+            };
+
+            if (User.Identity.IsAuthenticated && User.Claims.ToList().FirstOrDefault((c) => c.Type == "Id").Value == post.AppUserId)
+            {
+                return Page();
+            }
+
+            return Redirect("/");
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPost(int id)
         {
             if (ModelState.IsValid)
             {
+                var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == id);
+                if (post is null)
+                {
+                    return Redirect("/");
+                }
+
                 Input.Body = Input.Body.Replace("img src=\"..", "img src=\"https://localhost:7020/");
 
-                var post = new Post
-                {
-                    Title = Input.Title,
-                    Body = Input.Body,
-                    CreatedDate = DateTime.Now,
-                    AppUserId = User.Claims.ToList().FirstOrDefault((c) => c.Type == "Id").Value
-                };
+                post.Title = Input.Title;
+                post.Body = Input.Body;
+                post.CreatedDate = DateTime.Now;
 
                 if (Input.CoverImage is not null && Input.CoverImage.Length > 0)
                 {
@@ -53,16 +75,11 @@ namespace BlogSite.Pages.Posts
                     }
                     post.CoverImage = "https://" + HttpContext.Request.Host.Value + "/UploadedFiles/" + picName;
                 }
-                else
-                {
-                    ModelState.AddModelError("CoverImage","Invalid image");
-                    return Page();
-                }
-
-                _dbContext.Posts.Add(post);
+  
+                _dbContext.Posts.Update(post);
                 await _dbContext.SaveChangesAsync();
 
-                return Redirect($"./details/{post.Id}");
+                return Redirect($"/Posts/Details/{post.Id}");
             }
             return Page();
         }

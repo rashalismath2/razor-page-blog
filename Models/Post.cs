@@ -8,11 +8,15 @@ namespace BlogSite.Models
         public int Id { get; set; }
         [Required]
         [MinLength(3)]
-        public string TItle { get; set; }
+        public string Title { get; set; }
         [Required]
         [MinLength(10)]
         public string Body { get; set; }
         public DateTime CreatedDate { get; set; }
-        //public List<string> Images { get; set; }
+        public bool IsAllowed { get; set; }
+        public string? NotAllowedReason { get; set; }
+        public AppUser AppUser { get; set; }
+        public string AppUserId { get; set; }
+        public string CoverImage { get; set; }
     }
 }

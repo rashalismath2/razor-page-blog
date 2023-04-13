@@ -1,14 +1,17 @@
-﻿using BlogSite.Models;
+using BlogSite.Models;
 using BlogSite.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlogSite.Pages
+namespace BlogSite.Pages.Search
 {
     public class IndexModel : PageModel
     {
         private readonly AppDbContext _dbContext;
+
+        [BindProperty(SupportsGet = true)]
+        public string title { get; set; }
         public List<Post> Posts { get; set; } = new();
         public IndexModel(AppDbContext dbContext)
         {
@@ -16,9 +19,14 @@ namespace BlogSite.Pages
         }
         public async Task<IActionResult> OnGet()
         {
-            Posts = await _dbContext.Posts
-                                .Include(p => p.AppUser)
-                                .ToListAsync();
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                var posts = await _dbContext.Posts.Where(p => p.Title.ToLower().Contains(title.ToLower()))
+                    .Include(p => p.AppUser)
+                    .ToListAsync();
+                Posts = posts;
+            }
+
             return Page();
         }
     }
