@@ -3,6 +3,9 @@ using BlogSite.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace BlogSite.Pages.Posts
 {
@@ -11,11 +14,15 @@ namespace BlogSite.Pages.Posts
     {
         private readonly AppDbContext _dbContext;
         private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly HttpClient http;
+        private readonly string aiEndpoint;
 
-        public CreateModel(AppDbContext dbContext, IWebHostEnvironment webHostEnvironment)
+        public CreateModel(AppDbContext dbContext, IWebHostEnvironment webHostEnvironment, IConfiguration configs)
         {
             _dbContext = dbContext;
             this.webHostEnvironment = webHostEnvironment;
+            this.http = new HttpClient();
+            aiEndpoint = new Uri(configs["Ai_Endpoint"]).ToString();
         }
 
         [BindProperty]
@@ -35,7 +42,8 @@ namespace BlogSite.Pages.Posts
                     Title = Input.Title,
                     Body = Input.Body,
                     CreatedDate = DateTime.Now,
-                    AppUserId = User.Claims.ToList().FirstOrDefault((c) => c.Type == "Id").Value
+                    AppUserId = User.Claims.ToList().FirstOrDefault((c) => c.Type == "Id").Value,
+                    IsAllowed=true
                 };
 
                 if (Input.CoverImage is not null && Input.CoverImage.Length > 0)
@@ -55,8 +63,40 @@ namespace BlogSite.Pages.Posts
                 }
                 else
                 {
-                    ModelState.AddModelError("CoverImage","Invalid image");
+                    ModelState.AddModelError("CoverImage", "Invalid image");
                     return Page();
+                }
+
+
+                var jsonString = JsonConvert.SerializeObject(new AIEndpointRequestBody(post.Title, post.Body));
+                var stringContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await http.PostAsync(aiEndpoint, stringContent);
+                var httpResonse = "";
+                if (response.IsSuccessStatusCode)
+                {
+                    httpResonse = await response.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    return Page();
+                }
+                var responseObject = JsonConvert.DeserializeObject<AIEndpointResponseBody>(httpResonse);
+                var isPostRejected = responseObject.IsTItleContainsHate=="hate" || responseObject.IsBodyContainsHate=="hate";
+
+                if (isPostRejected)
+                {
+                    var hateReason = "";
+                    if (responseObject.IsTItleContainsHate == "hate")
+                    {
+                        hateReason = "Title contains Hateful contents.";
+                    }
+                    if (responseObject.IsBodyContainsHate == "hate")
+                    {
+                        hateReason = hateReason + " Body contains Hateful contents.";
+                    }
+                    post.IsAllowed = false;
+                    post.NotAllowedReason = hateReason;
                 }
 
                 _dbContext.Posts.Add(post);

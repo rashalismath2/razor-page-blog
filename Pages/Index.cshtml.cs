@@ -18,6 +18,7 @@ namespace BlogSite.Pages
         {
             Posts = await _dbContext.Posts
                                 .Include(p => p.AppUser)
+                                .Where(p => p.IsAllowed)
                                 .ToListAsync();
             return Page();
         }

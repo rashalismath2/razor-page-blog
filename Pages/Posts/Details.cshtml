@@ -28,7 +28,15 @@
                     @if (User.Identity.IsAuthenticated && User.Claims.ToList().FirstOrDefault((c) => c.Type == "Id").Value == Model.Post.AppUserId)
                     {
                         <div id="post-actions">
-                            <a  asp-page="Edit" asp-route-id="@Model.Post.Id">
+                            @if (!Model.Post.IsAllowed)
+                            {
+                                <span class="badge rounded-pill text-bg-danger bg-danger">@Model.Post.NotAllowedReason</span>
+                            }
+                            else
+                            {
+                                <span class="badge rounded-pill text-bg-success bg-success">Published</span>
+                            }
+                            <a asp-page="Edit" asp-route-id="@Model.Post.Id">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
                             <a href="/Posts/Delete/@Model.Post.Id">

@@ -21,7 +21,7 @@ namespace BlogSite.Pages.Search
         {
             if (!string.IsNullOrWhiteSpace(title))
             {
-                var posts = await _dbContext.Posts.Where(p => p.Title.ToLower().Contains(title.ToLower()))
+                var posts = await _dbContext.Posts.Where(p => p.Title.ToLower().Contains(title.ToLower()) && p.IsAllowed)
                     .Include(p => p.AppUser)
                     .ToListAsync();
                 Posts = posts;
