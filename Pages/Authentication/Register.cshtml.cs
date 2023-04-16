@@ -47,6 +47,8 @@ namespace BlogSite.Pages.Authentication
                 var user = CreateUser();
 
                 user.FullName = Input.FullName;
+                user.Email = Input.Email;
+                user.Bio = Input.Bio;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
 
                 var result = await _userManager.CreateAsync(user, Input.Password);

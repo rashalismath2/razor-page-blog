@@ -10,5 +10,7 @@ public class AppUser : IdentityUser
     public string FullName { get; set; }
     public List<GalleryImages>? GalleryImages { get; set; }
     public List<Post> Articles { get; set; }
+    public string Bio { get; set; }
+    public List<AppUser> Followers { get; set; }
 }
 

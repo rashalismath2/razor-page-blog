@@ -1,0 +1,93 @@
+﻿@page
+@model BlogSite.Pages.Profile.EditModel
+@{
+    ViewData["Title"] = "Update Profile";
+}
+
+
+<div class="container">
+    <div class="row profile">
+        <div class="col-md-3">
+            <div class="profile-sidebar card">
+                <!-- SIDEBAR USERPIC -->
+                <div class="flex-shrink-0 profile-pic-container">
+                    @if (string.IsNullOrWhiteSpace(Model.TargetUser?.ProfileUrl))
+                    {
+                        <img class="img-md rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar1.png" />
+                    }
+                    else
+                    {
+                        <img class="img-md rounded-circle" src="@Model.TargetUser.ProfileUrl" alt="Profile Picture" loading="lazy">
+                    }
+                </div>
+                <!-- END SIDEBAR USERPIC -->
+                <!-- SIDEBAR USER TITLE -->
+                <div class="profile-usertitle">
+                    <div class="profile-usertitle-name">
+                        @Model.TargetUser.FullName
+                    </div>
+                    <div class="profile-usertitle-job">
+                        @Model.TargetUser.Email
+                    </div>
+                    <div class="profile-usertitle-job">
+                        @if (Model.TargetUser.Followers is not null)
+                        {
+                            @Model.TargetUser.Followers.Count()
+                        }
+                        Followers.
+                    </div>
+                    <div class="profile-userbio">
+                        @Model.TargetUser.Bio
+                    </div>
+                </div>
+                <!-- END SIDEBAR USER TITLE -->
+                <!-- SIDEBAR BUTTONS -->
+                @if (User.Identity.IsAuthenticated && User.Claims.ToList().FirstOrDefault((c) => c.Type == "Id").Value != Model.userId)
+                {
+                    <div id="follow-button" class="profile-userbuttons">
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="profile-content">
+                <form id="account" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Input.FullName" class="form-label"></label>
+                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                        <input asp-for="Input.FullName" class="form-control" autocomplete="FullName" aria-required="true" placeholder="Fullname" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.Bio" class="form-label"></label>
+                        <span asp-validation-for="Input.Bio" class="text-danger"></span>
+                        <textarea asp-for="Input.Bio" class="form-control" aria-required="true"></textarea>
+                    </div>
+                    <div class="form-group hiden-field">
+                        <label asp-for="Input.Email" class="form-label"></label>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        <input asp-for="Input.Email" class="form-control" autocomplete="Email" aria-required="true" placeholder="Email" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.CurrentPassword" class="form-label"></label>
+                        <span asp-validation-for="Input.CurrentPassword" class="text-danger"></span>
+                        <input asp-for="Input.CurrentPassword" class="form-control" autocomplete="current-password" aria-required="true" />
+                    </div>        
+                    <div class="form-group">
+                        <label asp-for="Input.Password" class="form-label"></label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.ProfilePic" class="form-label"></label>
+                        <input asp-for="Input.ProfilePic" type="file" accept="image/*" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

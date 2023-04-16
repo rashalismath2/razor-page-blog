@@ -44,3 +44,5 @@ async def create_item(item: Article):
         "IsTItleContainsHate":isArticleTitleHateful,
         "IsBodyContainsHate":isArticleBodyHateful
     }
+
+# uvicorn main:app --reload    

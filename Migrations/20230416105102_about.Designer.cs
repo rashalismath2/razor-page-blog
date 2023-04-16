@@ -3,6 +3,7 @@ using System;
 using BlogSite.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogSite.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230416105102_about")]
+    partial class about
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,9 +29,6 @@ namespace BlogSite.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Bio")
                         .IsRequired()
@@ -86,8 +86,6 @@ namespace BlogSite.Migrations
                         .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -289,13 +287,6 @@ namespace BlogSite.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("BlogSite.Models.AppUser", b =>
-                {
-                    b.HasOne("BlogSite.Models.AppUser", null)
-                        .WithMany("Followers")
-                        .HasForeignKey("AppUserId");
-                });
-
             modelBuilder.Entity("BlogSite.Models.GalleryImages", b =>
                 {
                     b.HasOne("BlogSite.Models.AppUser", null)
@@ -368,8 +359,6 @@ namespace BlogSite.Migrations
             modelBuilder.Entity("BlogSite.Models.AppUser", b =>
                 {
                     b.Navigation("Articles");
-
-                    b.Navigation("Followers");
 
                     b.Navigation("GalleryImages");
                 });

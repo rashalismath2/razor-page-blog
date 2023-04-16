@@ -22,7 +22,7 @@
                         }
                     </div>
                     <div class="flex-grow-1 ms-3">
-                        <a href="/users/@Model.Post.AppUser.Id" class=" user-name">@Model.Post.AppUser.FullName</a>
+                        <a href="/profile?userId=@Model.Post.AppUser.Id" class=" user-name">@Model.Post.AppUser.FullName</a>
                         <p class="text-muted m-0 post-details-created-date">@Model.Post.CreatedDate.ToString("dd/MM/yyyy")</p>
                     </div>
                     @if (User.Identity.IsAuthenticated && User.Claims.ToList().FirstOrDefault((c) => c.Type == "Id").Value == Model.Post.AppUserId)

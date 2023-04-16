@@ -38,8 +38,8 @@
                             <li class="nav-item">
                                 <a class="nav-link text-light" asp-area="" asp-page="/posts/create"><i class="fa-regular fa-pen-to-square"></i></a>
                             </li>
-                            <li class="nav-item text-light">
-                                <p class="navbar-text text-white my-0 mx-3">Hello, @User.Claims.ToList().FirstOrDefault((c)=>c.Type=="FullName").Value!</p>
+                            <li class="nav-item text-light nav-profile-link">
+                                <a href="/profile?userId=@User.Claims.ToList().FirstOrDefault((c)=>c.Type=="Id").Value" class="navbar-text text-white my-0 mx-3">Hello, @User.Claims.ToList().FirstOrDefault((c)=>c.Type=="FullName").Value!</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" aria-current="page" href="/authentication/logout">Logout</a>
