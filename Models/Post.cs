@@ -18,5 +18,7 @@ namespace BlogSite.Models
         public AppUser AppUser { get; set; }
         public string AppUserId { get; set; }
         public string CoverImage { get; set; }
+        public List<Like> Likes { get; set; }
+        public List<Comment> Comments { get; set; }
     }
 }

@@ -61,4 +61,225 @@
     <div id="post-body">
         @(new HtmlString(Model.Post.Body))
     </div>
+    <div id="comments-container">
+    </div>
 </div>
+
+@section Scripts{
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+
+    <script type="text/babel">
+         // Render your React component instead
+        const root = ReactDOM.createRoot(document.getElementById('listen-container'));
+         function Audio(props){
+    
+             const [audibook,setAudiobook]=React.useState(null);
+               const [audibookLoading,setAudiobookLoading]=React.useState(false);
+
+            React.useEffect(()=>{
+
+
+            },[])
+
+            const GetAudioBook=()=>{
+                const params = window.location.href
+               let routePostId = params.split("/")[5];
+               setAudiobookLoading(true)
+               fetch("https://localhost:7020/api/post/"+routePostId+"/audiobook")
+                   .then(res=>res.json())
+                   .then(res=>{
+                       setAudiobook(res)
+                         setAudiobookLoading(false)
+                   })
+                   .catch(e=>{
+                    console.log(e)
+                     setAudiobookLoading(false)
+                   })
+
+            }
+
+            return(
+                <div id="listen-container-inner">
+                   {
+                    audibook==null?<div>
+                        <button disabled={audibookLoading} onClick={GetAudioBook} class="btn">
+                            <i class="fa-solid fa-play"></i>
+                            {audibookLoading?<span>Loading...</span>:null}
+                        </button>
+                    </div>
+                    :<audio controls className="audio-element">
+                      <source src={audibook}></source>
+                    </audio>
+                   }
+                </div>
+            )
+        }
+
+        root.render(<Audio />);
+
+    </script>
+
+    <script type="text/babel">
+        // Render your React component instead
+        const root = ReactDOM.createRoot(document.getElementById('comments-container'));
+
+        function Social(props){
+            const [socialData,setSocialData]=React.useState(null)
+            const [postId,setPostId]=React.useState(null)
+            const [comment,setComment]=React.useState("")
+
+            React.useEffect(()=>{
+
+               const params = window.location.href
+               let routePostId = params.split("/")[5];
+                setPostId(routePostId)
+
+               fetch("https://localhost:7020/api/social/"+routePostId)
+               .then(res=>res.json())
+               .then(res=>{
+                   setSocialData(res)
+               })
+               .catch(e=>{
+                console.log(e)
+               })
+
+            },[])
+
+            const commentInputChange=(e)=>{
+                setComment(e.target.value)
+            }
+            const addComment=(e)=>{
+              fetch("https://localhost:7020/api/social/comment",{
+                method:"POST",
+                   headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json'
+                    },
+                body:JSON.stringify({
+                    Comment:comment,
+                    PostId:postId
+                })
+              })
+               .then(res=>res.json())
+               .then(res=>{
+                   setSocialData({
+                    ...socialData,
+                    comments:[...socialData.comments,res]
+                   });
+                     setComment("")
+               })
+               .catch(e=>{
+                console.log(e)
+               })
+
+            }
+
+            const UnLike=()=>{
+                    fetch("https://localhost:7020/api/social/"+postId+"/unlike",{
+                         method:"POST",
+                           headers: {
+                              'Accept': 'application/json',
+                              'Content-Type': 'application/json'
+                            },
+                            body:JSON.stringify({})
+                       })
+                   .then(res=>{
+                       var likes=socialData.likes
+                       likes.pop()
+                       setSocialData({
+                        ...socialData,
+                        isLiked:false,
+                        likes:likes
+                       });
+                   })
+                   .catch(e=>{
+                    console.log(e)
+                   })
+            }
+            const Like=()=>{
+                       fetch("https://localhost:7020/api/social/"+postId+"/like",{
+                         method:"POST",
+                           headers: {
+                              'Accept': 'application/json',
+                              'Content-Type': 'application/json'
+                            },
+                            body:JSON.stringify({})
+                       })
+                   .then(res=>{
+                       setSocialData({
+                        ...socialData,
+                        isLiked:true,
+                        likes:[...socialData.likes,{id:0}]
+                       });
+                   })
+                   .catch(e=>{
+                    console.log(e)
+                   })
+            }
+
+            return(
+                <div id="comments-inner">
+                    {
+                        socialData!=null?<div id="post-card-interactions">
+                                    <div className="post-card-social-icons">
+                                       { socialData.isLiked?
+                                           <button class="btn"  type="button" onClick={UnLike}><i className="fa-solid fa-heart" style={{color: "#ff0a0a"}}></i>{ socialData.likes.length}</button>
+                                           :<button class="btn"  type="button" onClick={Like}><i class="fa-regular fa-heart"></i>{ socialData.likes.length}</button>
+                                       }
+                                    </div>
+                                    <div className="post-card-social-icons"><i class="fa-regular fa-comment"></i>{socialData.comments.length}</div>
+                         </div>:null
+                    }
+                    <hr />
+                   {
+                    socialData!=null? <div id="comments-list-container" className="comment-list">
+                        {
+                            socialData.comments.map((item)=>(
+                                  <article class="row">
+                                    <div class="col-md-1 col-sm-1 hidden-xs p-0">
+                                      <figure class="thumbnail">
+                                        <img class="img-responsive" src={item.commentedUser.profileUrl} />
+                                      </figure>
+                                    </div>
+                                    <div class="col-md-10 col-sm-10 p-0">
+                                      <div class="panel panel-default arrow left">
+                                        <div class="panel-body">
+                                          <header class="text-left">
+                                            <div class="comment-user"><i class="fa fa-user"></i> {item.commentedUser.fullName}</div>
+                                            <time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i> {new Date(item.date).toDateString()}</time>
+                                          </header>
+                                          <div class="comment-post">
+                                            <p>
+                                              {item.comments}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </article>
+                            ))
+                        }
+                    </div>:null
+                   }
+                   {
+                    socialData!=null? <div id="comment-box-container">
+                            {
+                                socialData.isSocialAllowed?<div class="input-group">
+                                              <textarea onChange={commentInputChange} class="form-control" aria-label="With textarea"></textarea>
+                                              <button onClick={addComment} type="button" class="btn btn-primary">Comment</button>
+                                            </div>:null
+                            }
+                    </div>:null
+                   }
+                </div>
+            )
+        }
+
+        root.render(<Social />);
+
+    </script>
+
+}

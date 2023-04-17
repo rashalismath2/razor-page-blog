@@ -18,6 +18,8 @@ namespace BlogSite.Pages
         {
             Posts = await _dbContext.Posts
                                 .Include(p => p.AppUser)
+                                 .Include(p => p.Likes)
+                                .Include(p => p.Comments)
                                 .Where(p => p.IsAllowed)
                                 .ToListAsync();
             return Page();

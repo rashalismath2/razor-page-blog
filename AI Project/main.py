@@ -4,7 +4,8 @@ from simpletransformers.classification import ClassificationModel
 from bs4 import BeautifulSoup
 from typing import Optional
 from pydantic import BaseModel
-
+from gtts import gTTS
+from fastapi.staticfiles import StaticFiles
 
 # function to remove HTML tags
 def remove_html_tags(text):
@@ -31,6 +32,8 @@ class Article(BaseModel):
 
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 @app.post("/validate")
 async def create_item(item: Article):
@@ -44,5 +47,12 @@ async def create_item(item: Article):
         "IsTItleContainsHate":isArticleTitleHateful,
         "IsBodyContainsHate":isArticleBodyHateful
     }
+@app.post("/audio")
+async def create_item(item: Article):
+    item.Body=remove_html_tags(item.Body)
+    tts = gTTS(item.Body, lang='en')
+    # Save converted audio as mp3 format
+    tts.save('./static/'+item.Title.strip()+'.mp3')
+    return "http://localhost:8000/static/"+item.Title.strip()+'.mp3'
 
 # uvicorn main:app --reload    

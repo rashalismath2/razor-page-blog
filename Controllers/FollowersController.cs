@@ -10,7 +10,7 @@ namespace BlogSite.Controllers
     [Route("api/followers")]
     [ApiController]
     [Authorize]
-    public class FollowersController : Controller
+    public class FollowersController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
 

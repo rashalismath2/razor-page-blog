@@ -23,6 +23,8 @@ namespace BlogSite.Pages.Search
             {
                 var posts = await _dbContext.Posts.Where(p => p.Title.ToLower().Contains(title.ToLower()) && p.IsAllowed)
                     .Include(p => p.AppUser)
+                    .Include(p => p.Likes)
+                    .Include(p => p.Comments)
                     .ToListAsync();
                 Posts = posts;
             }

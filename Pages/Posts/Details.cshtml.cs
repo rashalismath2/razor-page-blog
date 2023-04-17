@@ -17,7 +17,8 @@ namespace BlogSite.Pages.Posts
         }
         public async Task<IActionResult> OnGet(int id)
         {
-            var post = await _dbContext.Posts.Include(p => p.AppUser).FirstOrDefaultAsync(p => p.Id == id);
+            var post = await _dbContext.Posts.Include(p => p.AppUser).Include(p => p.Likes).Include(p => p.Comments)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (post is null)
             {
                 return Redirect("/");
