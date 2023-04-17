@@ -75,7 +75,7 @@
          // Render your React component instead
         const root = ReactDOM.createRoot(document.getElementById('listen-container'));
          function Audio(props){
-    
+
              const [audibook,setAudiobook]=React.useState(null);
                const [audibookLoading,setAudiobookLoading]=React.useState(false);
 
@@ -130,6 +130,8 @@
             const [socialData,setSocialData]=React.useState(null)
             const [postId,setPostId]=React.useState(null)
             const [comment,setComment]=React.useState("")
+            const [editCommentId,setEditCommentId]=React.useState(null)
+            const [commentEditing,setCommentEditing]=React.useState("")
 
             React.useEffect(()=>{
 
@@ -219,6 +221,67 @@
                     console.log(e)
                    })
             }
+            const DeleteComment=(commentId)=>{
+                       fetch("https://localhost:7020/api/social/"+postId+"/delete-comment?commentId="+commentId,{
+                         method:"POST",
+                           headers: {
+                              'Accept': 'application/json',
+                              'Content-Type': 'application/json'
+                            },
+                            body:JSON.stringify({})
+                       })
+                   .then(res=>{
+                       setSocialData({
+                        ...socialData,
+                        comments:[...socialData.comments.filter(c=>c.id!=commentId)]
+                       });
+                   })
+                   .catch(e=>{
+                    console.log(e)
+                   })
+            }
+            const EditComment=(comment)=>{
+                setEditCommentId(comment.id)
+                setCommentEditing(comment.comments)
+            }
+            const editCommentInputChange=(e)=>{
+                setCommentEditing(e.target.value)
+            }
+            const editComment=()=>{
+                     fetch("https://localhost:7020/api/social/"+postId+"/update-comment",{
+                         method:"POST",
+                           headers: {
+                              'Accept': 'application/json',
+                              'Content-Type': 'application/json'
+                            },
+                            body:JSON.stringify({
+                                commentId:editCommentId,
+                                Comment:commentEditing
+                            })
+                       })
+                   .then(res=>{
+                      setSocialData({
+                        ...socialData,
+                        comments:[...socialData.comments.map(c=>{
+                            if(c.id==editCommentId){
+                                c.comments=commentEditing
+                            }
+                            return c
+                        })]
+                       });
+                       setEditCommentId(null)
+                        setCommentEditing("")
+                   })
+                 .catch(e=>{
+                    console.log(e)
+                   })
+                }
+            
+            const cancelEditComment=()=>{
+                 setEditCommentId(null)
+                setCommentEditing("")
+            }
+
 
             return(
                 <div id="comments-inner">
@@ -227,7 +290,7 @@
                                     <div className="post-card-social-icons">
                                        { socialData.isLiked?
                                            <button class="btn"  type="button" onClick={UnLike}><i className="fa-solid fa-heart" style={{color: "#ff0a0a"}}></i>{ socialData.likes.length}</button>
-                                           :<button class="btn"  type="button" onClick={Like}><i class="fa-regular fa-heart"></i>{ socialData.likes.length}</button>
+                                           :<button class="btn" disabled={socialData.authUserId==null} type="button" onClick={Like}><i class="fa-regular fa-heart"></i>{ socialData.likes.length}</button>
                                        }
                                     </div>
                                     <div className="post-card-social-icons"><i class="fa-regular fa-comment"></i>{socialData.comments.length}</div>
@@ -250,11 +313,30 @@
                                           <header class="text-left">
                                             <div class="comment-user"><i class="fa fa-user"></i> {item.commentedUser.fullName}</div>
                                             <time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i> {new Date(item.date).toDateString()}</time>
+                                            {
+                                                item.commentedUser.id==socialData.authUserId?<div class="social-interction-actions">
+                                                   <button onClick={()=>{EditComment(item)}}  class="btn">
+                                                        <i class="fa-solid fa-pen"></i>
+                                                    </button>
+                                                    <button onClick={()=>{DeleteComment(item.id)}} class="btn">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                            </div>:null
+                                            }
                                           </header>
-                                          <div class="comment-post">
-                                            <p>
-                                              {item.comments}
-                                            </p>
+                                          <div class="comment-post" id="comment-box-container">
+                                            {editCommentId!=item.id? <p>
+                                                  {item.comments}
+                                                </p>
+                                               :
+                                               <div class="input-group">
+                                                  <textarea onChange={editCommentInputChange} value={commentEditing} class="form-control" aria-label="With textarea"></textarea>
+                                                    <div>
+                                                      <button onClick={cancelEditComment} type="button" class="btn btn-secondary me-2">Cancel</button>
+                                                        <button onClick={editComment} type="button" class="btn btn-primary">Save</button>
+                                                    </div>
+                                                </div>
+                                            }
                                           </div>
                                         </div>
                                       </div>
@@ -268,7 +350,7 @@
                     socialData!=null? <div id="comment-box-container">
                             {
                                 socialData.isSocialAllowed?<div class="input-group">
-                                              <textarea onChange={commentInputChange} class="form-control" aria-label="With textarea"></textarea>
+                                              <textarea onChange={commentInputChange} value={comment}  class="form-control" aria-label="With textarea"></textarea>
                                               <button onClick={addComment} type="button" class="btn btn-primary">Comment</button>
                                             </div>:null
                             }

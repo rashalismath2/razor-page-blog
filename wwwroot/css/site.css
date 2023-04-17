@@ -510,6 +510,16 @@ edit post*/
     .post-card-social-icons i {
         margin-right: 5px;
     }
+.social-interction-actions .btn {
+    padding-right: 0;
+}
+
+.social-interction-actions  {
+    padding-left: 20px;
+}
+
+
+
 
 #comments-container {
     margin-bottom: 50px;
@@ -585,7 +595,9 @@ edit post*/
 #comments-inner #post-card-interactions {
     padding-left:0
 }
-
+#comments-list-container {
+    margin-bottom: 40px;
+}
 
 
 /*

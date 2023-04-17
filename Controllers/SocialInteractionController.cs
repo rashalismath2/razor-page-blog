@@ -35,7 +35,8 @@ namespace BlogSite.Controllers
                     Likes = p.Likes,
                     Comments = p.Comments,
                     IsLiked = isAuthenticated ? p.Likes.FirstOrDefault(l => l.LikedUser.Id == userId) != null : false,
-                    IsSocialAllowed = isAuthenticated
+                    IsSocialAllowed = isAuthenticated,
+                    AuthUserId= userId
                 })
                 .FirstOrDefaultAsync();
 
@@ -96,6 +97,37 @@ namespace BlogSite.Controllers
                     LikedUser=user
                 }
             };
+
+            _dbContext.Update(post);
+            await _dbContext.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost("{id}/delete-comment")]
+        public async Task<IActionResult> DeleteComment([FromRoute] int id, [FromQuery] int commentId)
+        {
+            string userId = User.Claims.ToList().FirstOrDefault((c) => c.Type == "Id").Value;
+
+            var post = await _dbContext.Posts.Where(p => p.Id == id)
+                .Include(l => l.Comments.Where(l => l.Id==commentId))
+                .FirstOrDefaultAsync();
+
+            var comment = post.Comments.FirstOrDefault();
+            post.Comments.Remove(comment);
+            _dbContext.Update(post);
+            await _dbContext.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost("{id}/update-comment")]
+        public async Task<IActionResult> UpdateComment([FromRoute] int id, [FromBody] UpdateCommentRequestVm updatedComment)
+        {
+            string userId = User.Claims.ToList().FirstOrDefault((c) => c.Type == "Id").Value;
+
+            var post = await _dbContext.Posts.Where(p => p.Id == id)
+                .Include(l => l.Comments.Where(l => l.Id == updatedComment.CommentId))
+                .FirstOrDefaultAsync();
+
+            var comment = post.Comments.FirstOrDefault();
+            comment.Comments = updatedComment.Comment;
 
             _dbContext.Update(post);
             await _dbContext.SaveChangesAsync();
