@@ -41,7 +41,7 @@ namespace BlogSite.Pages.Posts
                 var tag = await _dbContext.Tags.FirstOrDefaultAsync(tag => tag.Title.ToLower() == Input.Tag.ToLower());
                 if (tag is null)
                 {
-                    tag = new Tags { Title = Input.Title };
+                    tag = new Tags { Title = Input.Tag };
                     _dbContext.Tags.Add(tag);
                 }
 
