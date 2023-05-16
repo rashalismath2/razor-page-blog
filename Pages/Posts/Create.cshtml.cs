@@ -80,33 +80,33 @@ namespace BlogSite.Pages.Posts
                 var jsonString = JsonConvert.SerializeObject(new AIEndpointRequestBody(post.Title, post.Body));
                 var stringContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-                //HttpResponseMessage response = await http.PostAsync(aiEndpoint, stringContent);
-                //var httpResonse = "";
-                //if (response.IsSuccessStatusCode)
-                //{
-                //    httpResonse = await response.Content.ReadAsStringAsync();
-                //}
-                //else
-                //{
-                //    return Page();
-                //}
-                //var responseObject = JsonConvert.DeserializeObject<AIEndpointResponseBody>(httpResonse);
-                //var isPostRejected = responseObject.IsTItleContainsHate == "hate" || responseObject.IsBodyContainsHate == "hate";
+                HttpResponseMessage response = await http.PostAsync(aiEndpoint, stringContent);
+                var httpResonse = "";
+                if (response.IsSuccessStatusCode)
+                {
+                    httpResonse = await response.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    return Page();
+                }
+                var responseObject = JsonConvert.DeserializeObject<AIEndpointResponseBody>(httpResonse);
+                var isPostRejected = responseObject.IsTItleContainsHate == "hate" || responseObject.IsBodyContainsHate == "hate";
 
-                //if (isPostRejected)
-                //{
-                //    var hateReason = "";
-                //    if (responseObject.IsTItleContainsHate == "hate")
-                //    {
-                //        hateReason = "Title contains Hateful contents.";
-                //    }
-                //    if (responseObject.IsBodyContainsHate == "hate")
-                //    {
-                //        hateReason = hateReason + " Body contains Hateful contents.";
-                //    }
-                //    post.IsAllowed = false;
-                //    post.NotAllowedReason = hateReason;
-                //}
+                if (isPostRejected)
+                {
+                    var hateReason = "";
+                    if (responseObject.IsTItleContainsHate == "hate")
+                    {
+                        hateReason = "Title contains Hateful contents.";
+                    }
+                    if (responseObject.IsBodyContainsHate == "hate")
+                    {
+                        hateReason = hateReason + " Body contains Hateful contents.";
+                    }
+                    post.IsAllowed = false;
+                    post.NotAllowedReason = hateReason;
+                }
 
                 _dbContext.Posts.Add(post);
                 await _dbContext.SaveChangesAsync();
