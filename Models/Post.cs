@@ -20,5 +20,6 @@ namespace BlogSite.Models
         public string CoverImage { get; set; }
         public List<Like> Likes { get; set; }
         public List<Comment> Comments { get; set; }
+        public Tags Tag { get; set; }
     }
 }

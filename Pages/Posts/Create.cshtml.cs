@@ -3,6 +3,7 @@ using BlogSite.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text;
@@ -37,13 +38,21 @@ namespace BlogSite.Pages.Posts
             {
                 Input.Body = Input.Body.Replace("img src=\"..", "img src=\"https://localhost:7020/");
 
+                var tag = await _dbContext.Tags.FirstOrDefaultAsync(tag => tag.Title.ToLower() == Input.Tag.ToLower());
+                if (tag is null)
+                {
+                    tag = new Tags { Title = Input.Title };
+                    _dbContext.Tags.Add(tag);
+                }
+
                 var post = new Post
                 {
                     Title = Input.Title,
                     Body = Input.Body,
                     CreatedDate = DateTime.Now,
                     AppUserId = User.Claims.ToList().FirstOrDefault((c) => c.Type == "Id").Value,
-                    IsAllowed=true
+                    IsAllowed = true,
+                    Tag = tag
                 };
 
                 if (Input.CoverImage is not null && Input.CoverImage.Length > 0)
@@ -71,33 +80,33 @@ namespace BlogSite.Pages.Posts
                 var jsonString = JsonConvert.SerializeObject(new AIEndpointRequestBody(post.Title, post.Body));
                 var stringContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = await http.PostAsync(aiEndpoint, stringContent);
-                var httpResonse = "";
-                if (response.IsSuccessStatusCode)
-                {
-                    httpResonse = await response.Content.ReadAsStringAsync();
-                }
-                else
-                {
-                    return Page();
-                }
-                var responseObject = JsonConvert.DeserializeObject<AIEndpointResponseBody>(httpResonse);
-                var isPostRejected = responseObject.IsTItleContainsHate=="hate" || responseObject.IsBodyContainsHate=="hate";
+                //HttpResponseMessage response = await http.PostAsync(aiEndpoint, stringContent);
+                //var httpResonse = "";
+                //if (response.IsSuccessStatusCode)
+                //{
+                //    httpResonse = await response.Content.ReadAsStringAsync();
+                //}
+                //else
+                //{
+                //    return Page();
+                //}
+                //var responseObject = JsonConvert.DeserializeObject<AIEndpointResponseBody>(httpResonse);
+                //var isPostRejected = responseObject.IsTItleContainsHate == "hate" || responseObject.IsBodyContainsHate == "hate";
 
-                if (isPostRejected)
-                {
-                    var hateReason = "";
-                    if (responseObject.IsTItleContainsHate == "hate")
-                    {
-                        hateReason = "Title contains Hateful contents.";
-                    }
-                    if (responseObject.IsBodyContainsHate == "hate")
-                    {
-                        hateReason = hateReason + " Body contains Hateful contents.";
-                    }
-                    post.IsAllowed = false;
-                    post.NotAllowedReason = hateReason;
-                }
+                //if (isPostRejected)
+                //{
+                //    var hateReason = "";
+                //    if (responseObject.IsTItleContainsHate == "hate")
+                //    {
+                //        hateReason = "Title contains Hateful contents.";
+                //    }
+                //    if (responseObject.IsBodyContainsHate == "hate")
+                //    {
+                //        hateReason = hateReason + " Body contains Hateful contents.";
+                //    }
+                //    post.IsAllowed = false;
+                //    post.NotAllowedReason = hateReason;
+                //}
 
                 _dbContext.Posts.Add(post);
                 await _dbContext.SaveChangesAsync();

@@ -21,6 +21,13 @@
             <span asp-validation-for="Input.CoverImage" class="text-danger"></span>
         </div>
     </div>
+    <div class="form-outline mb-4">
+        <label class="form-label" asp-for="Input.Tag"></label>
+        <div>
+            <input asp-for="Input.Tag" class="form-control" />
+            <span asp-validation-for="Input.Tag" class="text-danger"></span>
+        </div>
+    </div>
 
     <div class="form-outline mb-4">
         <label class="form-label" asp-for="Input.Body"></label>

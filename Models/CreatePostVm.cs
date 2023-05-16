@@ -8,6 +8,9 @@ namespace BlogSite.Models
         [MinLength(3)]
         public string Title { get; set; }
         [Required]
+        [MinLength(3)]
+        public string Tag { get; set; }
+        [Required]
         [MinLength(10)]
         public string Body { get; set; }
         [Required]

@@ -738,3 +738,19 @@ profile*/
 .hiden-field {
     display: none
 }
+#home-container, #search-page {
+    display: flex;
+}
+#tags {
+    width: 250px;
+    padding: 0 20px;
+}
+.search-results, #search-results-container {
+    width: calc(100% - 250px);
+}
+#home-container .alert, #search-page .alert {
+    width: calc(100% - 250px);
+}
+.badge-dark {
+    background:black
+}

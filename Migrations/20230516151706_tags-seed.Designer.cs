@@ -3,6 +3,7 @@ using System;
 using BlogSite.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogSite.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230516151706_tags-seed")]
+    partial class tagsseed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -230,18 +233,18 @@ namespace BlogSite.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("09071cd4-d2c3-47d9-997a-b4dfc436b2b7"),
-                            Title = "technology"
+                            Id = new Guid("ab510494-9ed0-4585-b526-08fcc085069a"),
+                            Title = "Technology"
                         },
                         new
                         {
-                            Id = new Guid("c54ae87d-a7b8-4040-8654-bb1089244763"),
-                            Title = "data science"
+                            Id = new Guid("27373c81-2459-4736-bca0-df5ebdbdb8d1"),
+                            Title = "Data science"
                         },
                         new
                         {
-                            Id = new Guid("a52fb7d2-d3b9-47cb-a302-4b74fbd5f596"),
-                            Title = "machine learning"
+                            Id = new Guid("e078c990-11eb-4bdc-a664-528f241103db"),
+                            Title = "Machine Learning"
                         });
                 });
 

@@ -10,6 +10,7 @@ namespace BlogSite.Pages
     {
         private readonly AppDbContext _dbContext;
         public List<Post> Posts { get; set; } = new();
+        public List<Tags> Tags { get; set; } = new();
         public IndexModel(AppDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -22,6 +23,7 @@ namespace BlogSite.Pages
                                 .Include(p => p.Comments)
                                 .Where(p => p.IsAllowed)
                                 .ToListAsync();
+            Tags = await _dbContext.Tags.ToListAsync();
             return Page();
         }
     }

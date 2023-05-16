@@ -3,6 +3,7 @@ using System;
 using BlogSite.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogSite.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230516150958_tags")]
+    partial class tags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -226,23 +229,6 @@ namespace BlogSite.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tags");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("09071cd4-d2c3-47d9-997a-b4dfc436b2b7"),
-                            Title = "technology"
-                        },
-                        new
-                        {
-                            Id = new Guid("c54ae87d-a7b8-4040-8654-bb1089244763"),
-                            Title = "data science"
-                        },
-                        new
-                        {
-                            Id = new Guid("a52fb7d2-d3b9-47cb-a302-4b74fbd5f596"),
-                            Title = "machine learning"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -1,6 +1,8 @@
 ﻿using BlogSite.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
+using System.Reflection.Metadata;
 
 namespace BlogSite.Repository
 {
@@ -12,12 +14,17 @@ namespace BlogSite.Repository
         }
         public DbSet<Post> Posts { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<Tags> Tags { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            var tags = new List<Tags> {
+                new Tags { Id=Guid.NewGuid(), Title = "technology" },
+                new Tags { Id=Guid.NewGuid(), Title = "data science" },
+                new Tags { Id=Guid.NewGuid(), Title = "machine learning" }
+            };
+            builder.Entity<Tags>().HasData(tags);
+
             base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
         }
     }
 }
